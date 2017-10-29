@@ -57,6 +57,9 @@ class MainWindow(wx.Frame):
                         *args, **kwargs)
 
         self.CreateMenu()
+        self.CreateToolbar()
+        self.CreateTree()
+
         self.Centre()
         self.Show(True)
 
@@ -81,7 +84,23 @@ class MainWindow(wx.Frame):
                                       'Quit application')
         self.Bind(wx.EVT_MENU, self.OnQuit, menu_1_item_1)
 
-    def OnQuit(self, e):
+    def CreateToolbar(self):
+
+        toolbar = self.CreateToolBar()
+
+        icon_quit = wx.ArtProvider.GetBitmap(wx.ART_QUIT)
+        tool_quit = toolbar.AddLabelTool(wx.ID_ANY, 'Quit', icon_quit)
+        self.Bind(wx.EVT_TOOL, self.OnQuit, tool_quit)
+
+        toolbar.Realize()
+
+    def CreateTree(self):
+
+        print 'to do'
+        
+
+
+    def OnQuit(self, event):
 
         self.Close()
 
