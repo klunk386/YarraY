@@ -23,6 +23,71 @@
 #
 # ==============================================================================
 
+import wx
+
+# ==============================================================================
+
+YARRAY_VERSION = "0.0.1"
+
+# ==============================================================================
+
+class YarraY(object):
+    """
+    """
+
+    def __init__(self, gui=True):
+
+        self.data = []
+
+        if gui:
+            app = wx.App()
+            MainWindow()
+            app.MainLoop()
+
+# ==============================================================================
+
+class MainWindow(wx.Frame):
+
+    def __init__(self, *args, **kwargs):
+
+        Parent = super(MainWindow, self)
+        Parent.__init__(None,
+                        size=(800,600),
+                        title="Yarray (Ver. {0})".format(YARRAY_VERSION),
+                        *args, **kwargs)
+
+        self.CreateMenu()
+        self.Centre()
+        self.Show(True)
+
+    def CreateMenu(self):
+
+        menubar = wx.MenuBar()
+        menu_1 = wx.Menu()
+        menu_2 = wx.Menu()
+        menu_3 = wx.Menu()
+        menu_4 = wx.Menu()
+        menu_5 = wx.Menu()
+
+        self.SetMenuBar(menubar)
+        menubar.Append(menu_1, '&Project')
+        menubar.Append(menu_2, '&Signals')
+        menubar.Append(menu_3, '&Viewer')
+        menubar.Append(menu_4, '&Tools')
+        menubar.Append(menu_5, '&Help')
+
+        menu_1_item_1 = menu_1.Append(wx.ID_EXIT,
+                                      'Quit',
+                                      'Quit application')
+        self.Bind(wx.EVT_MENU, self.OnQuit, menu_1_item_1)
+
+    def OnQuit(self, e):
+
+        self.Close()
+
+# ==============================================================================
 
 if __name__ == '__main__':
-    print 'Hello'
+
+    YarraY()
+
