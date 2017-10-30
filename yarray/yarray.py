@@ -97,7 +97,6 @@ class MainWindow(wx.Frame):
     def CreateTree(self):
 
         print 'to do'
-        
 
 
     def OnQuit(self, event):
