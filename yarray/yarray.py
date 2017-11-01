@@ -25,6 +25,8 @@
 
 import wx
 
+from variables import DB
+
 # ==============================================================================
 
 YARRAY_VERSION = "0.0.1"
@@ -37,7 +39,17 @@ class YarraY(object):
 
     def __init__(self, gui=True):
 
-        self.data = []
+        #TMP
+        DB.data['name'] = 'Test'
+        DB.data['nodes'] = []
+        DB.AddNode('Group 1')
+        DB.AddNode('Group a',['Group 1'])
+        DB.AddNode('Group b',['Group 1'])
+        DB.AddNode('Group c',['Group 1'])
+        DB.AddNode('Group 2')
+        DB.AddNode('Group d',['Group 2'])
+        DB.AddNode('Group e',['Group 2'])
+        DB.AddNode('Group f',['Group 2'])
 
         if gui:
             app = wx.App()
@@ -133,7 +145,16 @@ class ProjectTree(wx.TreeCtrl):
                       wx.DefaultSize,
                       wx.TR_HAS_BUTTONS)
 
-        root = self.AddRoot('Project')
+        root = self.AddRoot(DB.data['name'])
+
+        def GroupLoop (self, root, data):
+            for node in data['nodes']:
+                child = self.AppendItem(root, node['name'])
+                if node:
+                    GroupLoop(self, child, node)
+
+        GroupLoop(self, root, DB.data)
+        self.ExpandAll()
 
 # ==============================================================================
 

@@ -25,8 +25,7 @@
 
 class Project(object):
     """
-    The project class implements a hierarchical data structure
-    similar to JSON format.
+    The project class implements a hierarchical data structure in JSON format.
     Arrays and traces are appended to the tree end-branches.
     Groups can be arbitrary nested within the tree.
     Example structure:
