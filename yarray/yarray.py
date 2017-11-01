@@ -145,6 +145,10 @@ class ProjectTree(wx.TreeCtrl):
                       wx.DefaultSize,
                       wx.TR_HAS_BUTTONS)
 
+        self.LoadProject()
+
+    def LoadProject(self):
+
         root = self.AddRoot(DB.data['name'])
 
         def GroupLoop (self, root, data):
