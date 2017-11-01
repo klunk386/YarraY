@@ -50,15 +50,37 @@ class MainWindow(wx.Frame):
 
     def __init__(self, *args, **kwargs):
 
-        Parent = super(MainWindow, self)
-        Parent.__init__(None,
-                        size=(800,600),
-                        title="Yarray (Ver. {0})".format(YARRAY_VERSION),
-                        *args, **kwargs)
+        base = super(MainWindow, self)
+        base.__init__(None,
+                      size=(800,600),
+                      title="Yarray (Ver. {0})".format(YARRAY_VERSION),
+                      *args, **kwargs)
 
         self.CreateMenu()
         self.CreateToolbar()
-        self.CreateTree()
+
+        #-----------------------------------------------------------------------
+
+        splitter = wx.SplitterWindow(self, wx.ID_ANY)
+
+        panel_1 = wx.Panel(splitter, wx.ID_ANY)
+        panel_2 = wx.Panel(splitter, wx.ID_ANY)
+
+        splitter.SplitVertically(panel_1, panel_2)
+        splitter.SetSashGravity(0.25)
+
+        box_1 = wx.BoxSizer(wx.VERTICAL)
+        box_2 = wx.BoxSizer(wx.VERTICAL)
+        panel_1.SetSizer(box_1)
+        panel_2.SetSizer(box_2)
+
+        prj_tree = ProjectTree(panel_1)
+        box_1.Add(prj_tree, wx.ID_ANY, wx.EXPAND)
+
+        hdr_list = HeaderList(panel_2)
+        box_2.Add(hdr_list, wx.ID_ANY, wx.EXPAND)
+
+        #-----------------------------------------------------------------------
 
         self.Centre()
         self.Show(True)
@@ -94,14 +116,36 @@ class MainWindow(wx.Frame):
 
         toolbar.Realize()
 
-    def CreateTree(self):
-
-        print 'to do'
-
-
     def OnQuit(self, event):
 
         self.Close()
+
+# ==============================================================================
+
+class ProjectTree(wx.TreeCtrl):
+
+    def __init__(self, parent):
+
+        base = super(ProjectTree, self)
+        base.__init__(parent,
+                      wx.ID_ANY,
+                      wx.DefaultPosition,
+                      wx.DefaultSize,
+                      wx.TR_HAS_BUTTONS)
+
+        root = self.AddRoot('Project')
+
+# ==============================================================================
+
+class HeaderList(wx.ListCtrl):
+
+    def __init__(self, parent):
+
+        base = super(HeaderList, self)
+        base.__init__(parent,
+                      wx.ID_ANY,
+                      wx.DefaultPosition,
+                      wx.DefaultSize)
 
 # ==============================================================================
 
