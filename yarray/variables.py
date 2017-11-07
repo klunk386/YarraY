@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-#
 # ==============================================================================
 #
 # Copyright (C) 2017 Valerio Poggi
@@ -22,8 +18,3 @@
 # along with yarray.  If not, see <http://www.gnu.org/licenses/>.
 #
 # ==============================================================================
-
-from datatree import Project
-
-DB = Project('New Project')
-

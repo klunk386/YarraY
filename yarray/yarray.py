@@ -25,11 +25,25 @@
 
 import wx
 
-from variables import DB
+from datatree import Database, Array, Trace
 
 # ==============================================================================
 
 YARRAY_VERSION = "0.0.1"
+
+# ==============================================================================
+
+# TMP
+DB = Database('My Project')
+DB.add_child('Group 1')
+DB.get_child('Group 1').add_child('Trace 1','data',[1,2,3])
+DB.get_child('Group 1').add_child('Trace 2','data',[1,2,3])
+DB.get_child('Group 1').add_child('Trace 3','data',[1,2,3])
+
+DB.add_child('Group 2')
+DB.get_child('Group 2').add_child('Trace 4','data',[1,2,3])
+DB.get_child('Group 2').add_child('Trace 5','data',[1,2,3])
+DB.get_child('Group 2').add_child('Trace 6','data',[1,2,3])
 
 # ==============================================================================
 
@@ -38,18 +52,6 @@ class YarraY(object):
     """
 
     def __init__(self, gui=True):
-
-        #TMP
-        DB.data['name'] = 'Test'
-        DB.data['nodes'] = []
-        DB.AddNode('Group 1')
-        DB.AddNode('Group a',['Group 1'])
-        DB.AddNode('Group b',['Group 1'])
-        DB.AddNode('Group c',['Group 1'])
-        DB.AddNode('Group 2')
-        DB.AddNode('Group d',['Group 2'])
-        DB.AddNode('Group e',['Group 2'])
-        DB.AddNode('Group f',['Group 2'])
 
         if gui:
             app = wx.App()
@@ -88,6 +90,7 @@ class MainWindow(wx.Frame):
 
         prj_tree = ProjectTree(panel_1)
         box_1.Add(prj_tree, wx.ID_ANY, wx.EXPAND)
+        panel_1.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnActivate, prj_tree)
 
         hdr_list = HeaderList(panel_2)
         box_2.Add(hdr_list, wx.ID_ANY, wx.EXPAND)
@@ -96,6 +99,9 @@ class MainWindow(wx.Frame):
 
         self.Centre()
         self.Show(True)
+
+    def OnActivate(self, event):
+        print 'ciao'
 
     def CreateMenu(self):
 
@@ -134,6 +140,16 @@ class MainWindow(wx.Frame):
 
 # ==============================================================================
 
+class TreePanel(wx.Panel):
+
+    def __init__(self, parent):
+
+        base = super(TreePanel, self)
+        base.__init__(parent,
+                      wx.ID_ANY)
+
+# ==============================================================================
+
 class ProjectTree(wx.TreeCtrl):
 
     def __init__(self, parent):
@@ -149,16 +165,18 @@ class ProjectTree(wx.TreeCtrl):
 
     def LoadProject(self):
 
-        root = self.AddRoot(DB.data['name'])
+        root = self.AddRoot(DB.id)
+        self.SetPyData(root, None)
 
-        def GroupLoop (self, root, data):
-            for node in data['nodes']:
-                child = self.AppendItem(root, node['name'])
-                if node:
-                    GroupLoop(self, child, node)
+        def GroupLoop (self, root, group):
+            for node in group.child:
+                child = self.AppendItem(root, node.id)
+                GroupLoop(self, child, node)
+                self.SetPyData(child, node.data)
 
-        GroupLoop(self, root, DB.data)
+        GroupLoop(self, root, DB)
         self.ExpandAll()
+
 
 # ==============================================================================
 

@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-#
 # ==============================================================================
 #
 # Copyright (C) 2017 Valerio Poggi
@@ -23,85 +19,66 @@
 #
 # ==============================================================================
 
-class Project(object):
+class Node(object):
+
+    def __init__(self, id):
+
+        self.id = id
+        self.type = None
+        self.parent = None
+        self.child = []
+        self.data = None
+
+    def add_child(self, id, type='group', data=[]):
+
+        child = Node(id)
+        child.parent = self
+        if type:
+            child.type = type
+        if data:
+            child.data = data
+        self.child.append(child)
+        return child
+
+    def get_child(self, id):
+
+        for child in self.child:
+            if child.id == id:
+                return child
+
+    def get_path(self):
+
+        path = [self.id]
+        parent = self.parent
+        while 1:
+            if not parent:
+                break
+            path.insert(0, parent.id)
+            parent = parent.parent
+        return path
+
+class Database(Node):
     """
-    The project class implements a hierarchical data structure in JSON format.
+    The Database class implements a hierarchical data structure
+    based on a tree of node objects (or groups).
     Arrays and traces are appended to the tree end-branches.
-    Groups can be arbitrary nested within the tree.
-    Example structure:
-    data = {
-    "name" : "Project Name",
-    "type" : "project",
-    "nodes" : [
-              {
-              "name": "Group 1",
-              "type": "group",
-              "nodes": [
-                       {
-                       "name": "Group 2",
-                       "type": "group",
-                       "nodes":[
-                               Array()
-                               Array()
-                               Trace()
-                               ]
-                       },
-                       Array()
-                       Tarce()
-                       ]
-              },
-              {
-              "name": "Group 2",
-              "type": "group",
-              "nodes": []
-              }
-              ]
-    }
     """
 
     def __init__(self, project_name):
 
-        self.data = {'name': project_name,
-                     'type': 'project',
-                     'nodes': []}
+        Node.__init__(self, project_name)
+        self.type = 'root'
 
-    def GetPointer(self, path=[]):
+    def add_node(self, name):
 
-        pointer = self.data
-        for name in path:
-            for node in pointer['nodes']:
-                if node['name'] == name:
-                    pointer = node
-        return pointer
-
-    def AddNode(self, group_name, path=[]):
-
-        node = {'name': group_name,
-                'type': 'group',
-                'nodes': []}
-
-        pointer = self.GetPointer(path)
-        pointer['nodes'].append(node)
-
-    def DelNode(self, group_name, path=[]):
-
-        pointer = self.GetPointer(path)
-        for node in pointer['nodes']:
-            if node['name'] == group_name:
-              pointer['nodes'].remove(node)
-
-    def AddItem(self, item, path=[]):
-
-        pointer = self.GetPointer(path)
-        pointer['nodes'].append(item)
-
-    def GetItemById(self, item_id, path=[]):
-
-        pointer = self.GetPointer(path)
-        for node in pointer['nodes']:
-            if node['id'] == item_id:
-                return node
-
+        if not isinstance(name, list):
+            name = [name]
+        node = self
+        for id in name[:-1]:
+            child = node.get_child(id)
+            if not child:
+                node = node.add_child(id)
+        node.add_child(name[-1])
 
 # ==============================================================================
 
@@ -135,4 +112,5 @@ class Trace(object):
                      'ROT': [0.,0.,0.],
                      'UNITS': '',}
         self.data = []
+
 
