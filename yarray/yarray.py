@@ -168,15 +168,15 @@ class ProjectTree(wx.TreeCtrl):
         root = self.AddRoot(DB.id)
         self.SetPyData(root, None)
 
-        def GroupLoop (self, root, group):
-            for node in group.child:
-                child = self.AppendItem(root, node.id)
-                GroupLoop(self, child, node)
-                self.SetPyData(child, node.data)
-
-        GroupLoop(self, root, DB)
+        self.TreeLoop(root, DB)
         self.ExpandAll()
 
+    def TreeLoop (self, parent_level, database):
+
+        for node in database.child:
+            child_level = self.AppendItem(parent_level, node.id)
+            self.TreeLoop(child_level, node)
+            self.SetPyData(child_level, node.data)
 
 # ==============================================================================
 
