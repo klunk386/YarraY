@@ -25,6 +25,7 @@
 
 import wx
 
+from variables import *
 from datatree import Database, Array, Trace
 
 # ==============================================================================
@@ -66,7 +67,7 @@ class MainWindow(wx.Frame):
 
         base = super(MainWindow, self)
         base.__init__(None,
-                      size=(800,600),
+                      size=MAIN_WINDOW_SIZE,
                       title="Yarray (Ver. {0})".format(YARRAY_VERSION),
                       *args, **kwargs)
 

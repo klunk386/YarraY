@@ -18,3 +18,5 @@
 # along with yarray.  If not, see <http://www.gnu.org/licenses/>.
 #
 # ==============================================================================
+
+MAIN_WINDOW_SIZE = (600, 400)
