@@ -163,20 +163,68 @@ class ProjectTree(wx.TreeCtrl):
 
         self.LoadProject()
 
+        self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightClick)
+        
+    def OnRightClick(self, event):
+
+        menu = PopupMenu('somedata')
+        self.PopupMenu(menu, event.GetPosition())
+        menu.Destroy()
+        item = self.GetSelection()
+        print self.GetPyData(item).id
+
     def LoadProject(self):
 
         root = self.AddRoot(DB.id)
-        self.SetPyData(root, None)
+        self.SetPyData(root, DB)
 
         self.TreeLoop(root, DB)
         self.ExpandAll()
 
-    def TreeLoop (self, parent_level, database):
+    def TreeLoop (self, parent_level, db_level):
 
-        for node in database.child:
+        for node in db_level.child:
             child_level = self.AppendItem(parent_level, node.id)
             self.TreeLoop(child_level, node)
-            self.SetPyData(child_level, node.data)
+            self.SetPyData(child_level, node)
+
+# ==============================================================================
+
+class PopupMenu(wx.Menu):
+
+    def __init__(self, SomeData):
+
+        wx.Menu.__init__(self)
+
+        self.SomeData = SomeData
+    
+        item = wx.MenuItem(self, wx.NewId(), "Add Group")
+        self.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnItem1, item)
+
+        item = wx.MenuItem(self, wx.NewId(), "Delete Group")
+        self.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnItem2, item)
+
+        item = wx.MenuItem(self, wx.NewId(), "Add Trace")
+        self.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnItem3, item)
+
+        item = wx.MenuItem(self, wx.NewId(), "Delete Trace")
+        self.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OnItem4, item)
+
+    def OnItem1(self, event):
+        print "Item1: {0}".format(self.SomeData)
+
+    def OnItem2(self, event):
+        print "Item2: {0}".format(self.SomeData)
+
+    def OnItem3(self, event):
+        print "Item3: {0}".format(self.SomeData)
+
+    def OnItem4(self, event):
+        print "Item4: {0}".format(self.SomeData)
 
 # ==============================================================================
 
