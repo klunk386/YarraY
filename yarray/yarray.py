@@ -168,11 +168,11 @@ class ProjectTree(wx.TreeCtrl):
         
     def OnRightClick(self, event):
 
-        menu = PopupMenu('somedata')
+        item = self.GetSelection()
+
+        menu = PopupMenu(self.GetPyData(item))
         self.PopupMenu(menu, event.GetPosition())
         menu.Destroy()
-        item = self.GetSelection()
-        print self.GetPyData(item).id
 
     def LoadProject(self):
 
@@ -219,7 +219,7 @@ class PopupMenu(wx.Menu):
         print "Item1: {0}".format(self.SomeData)
 
     def OnItem2(self, event):
-        print "Item2: {0}".format(self.SomeData)
+        print "Deleting: {0}".format(self.SomeData)
 
     def OnItem3(self, event):
         print "Item3: {0}".format(self.SomeData)

@@ -29,13 +29,12 @@ class Node(object):
         self.child = []
         self.data = None
 
-    def add_child(self, id, type='group', data=[]):
+    def add_child(self, id, type='group', data=None):
 
         child = Node(id)
         child.parent = self
-        if type:
-            child.type = type
-        if data:
+        child.type = type
+        if data is not None:
             child.data = data
         self.child.append(child)
         return child
@@ -46,12 +45,19 @@ class Node(object):
             if child.id == id:
                 return child
 
+    def del_child(self, id=None):
+
+        for i in reversed(range(len(self.child))):
+            if (id is None) or (self.child[i].id == id):
+                self.child[i].del_child(None)
+                del self.child[i]
+
     def get_path(self):
 
         path = [self.id]
         parent = self.parent
         while 1:
-            if not parent:
+            if parent is None:
                 break
             path.insert(0, parent.id)
             parent = parent.parent
@@ -69,17 +75,6 @@ class Database(Node):
         Node.__init__(self, project_name)
         self.type = 'root'
 
-    def add_node(self, name):
-
-        if not isinstance(name, list):
-            name = [name]
-        node = self
-        for id in name[:-1]:
-            child = node.get_child(id)
-            if not child:
-                node = node.add_child(id)
-        node.add_child(name[-1])
-
 # ==============================================================================
 
 class Array(object):
@@ -92,6 +87,9 @@ class Array(object):
                      'NAME': '',
                      'NSTA': 0}
         self.data = []
+
+    def __del__(self):
+        print "Array deleted"
 
 # ==============================================================================
 
@@ -113,4 +111,5 @@ class Trace(object):
                      'UNITS': '',}
         self.data = []
 
-
+    def __del__(self):
+        print "Trace deleted"
