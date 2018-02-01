@@ -23,6 +23,7 @@
 #
 # ==============================================================================
 
+import sys
 import wx
 
 from variables import *
@@ -58,18 +59,19 @@ class YarraY(object):
             app = wx.App()
             MainWindow()
             app.MainLoop()
+        else:
+            print 'No gui... do something'
 
 # ==============================================================================
 
 class MainWindow(wx.Frame):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
 
         base = super(MainWindow, self)
         base.__init__(None,
                       size=MAIN_WINDOW_SIZE,
-                      title="Yarray (Ver. {0})".format(YARRAY_VERSION),
-                      *args, **kwargs)
+                      title="Yarray (Ver. {0})".format(YARRAY_VERSION))
 
         self.CreateMenu()
         self.CreateToolbar()
@@ -120,10 +122,31 @@ class MainWindow(wx.Frame):
         menubar.Append(menu_4, '&Tools')
         menubar.Append(menu_5, '&Help')
 
-        menu_1_item_1 = menu_1.Append(wx.ID_EXIT,
-                                      'Quit',
-                                      'Quit application')
-        self.Bind(wx.EVT_MENU, self.OnQuit, menu_1_item_1)
+        #-----------------------------------------------------------------------
+        # Menu Project Items
+
+        menu_1_item_1 = menu_1.Append(wx.NewId(),
+                                      'Ciao\tCTRL+N',
+                                      'Ciao application')
+
+        #menu_1_item_1 = menu_1.Append(wx.ID_EXIT,
+        #                              'Quit',
+        #                              'Quit application')
+        #self.Bind(wx.EVT_MENU, self.OnQuit, menu_1_item_1)
+
+        menu_1.AppendSeparator() 
+
+        item_1 = wx.MenuItem(menu_1,
+                             wx.ID_NEW,
+                             text = 'New Project',
+                             kind = wx.ITEM_NORMAL) 
+        item_1.SetBitmap(wx.Bitmap("pics/icons/Test_16x16.png")) 
+        menu_1.AppendItem(item_1) 
+
+        item_2 = wx.MenuItem(menu_1,
+                             wx.ID_EXIT,
+                             '&Quit\tCtrl+Q') 
+        menu_1.AppendItem(item_2) 
 
     def CreateToolbar(self):
 
@@ -178,6 +201,12 @@ class ProjectTree(wx.TreeCtrl):
 
         root = self.AddRoot(DB.id)
         self.SetPyData(root, DB)
+
+        image_list = wx.ImageList(16, 16)
+        image = image_list.Add(wx.Bitmap("pics/icons/Test_16x16.png"))
+        self.AssignImageList(image_list)
+
+        self.SetItemImage(root, image, wx.TreeItemIcon_Normal)
 
         self.TreeLoop(root, DB)
         self.ExpandAll()
@@ -243,5 +272,10 @@ class HeaderList(wx.ListCtrl):
 
 if __name__ == '__main__':
 
-    YarraY()
+    gui = True
+
+    if '-nogui' in sys.argv[1:]:
+        gui = False
+
+    YarraY(gui)
 
